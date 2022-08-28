@@ -31,7 +31,7 @@ public class ApplicationContext {
 
     public CANSparkMax getMotor2() {
         if (motor2 == null) {
-            motor2 = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
+            motor2 = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
         }
         return motor2;
     }
@@ -53,7 +53,7 @@ public class ApplicationContext {
 
     public Joystick getDriveStick() {
         if (driveStick == null) {
-            driveStick = new Joystick(1);
+            driveStick = new Joystick(3);
         }
         return driveStick;
     }

@@ -11,22 +11,25 @@ public class IntermediateSubsystem implements AsyncPeriodicRunnable {
     private final CANSparkMax motor1 = appCTX.getMotor1();
     private final CANSparkMax motor2 = appCTX.getMotor2();
     public IntermediateSubsystem(){
-        // currentIntermediateRollerState = IntermediateRollerState.STOP;
+        currentIntermediateRollerState = IntermediateRollerState.DEFAULT;
         autoRegisterWithPeriodicRunner();
     }
 
     @Override
     public void onPeriodicAsync() {
-        System.out.println("Current Intermediate State: " + currentIntermediateRollerState);
         switch(currentIntermediateRollerState) {
             case STOP:
                 motor1.set(0); motor2.set(0);
+                motor2.setIdleMode(CANSparkMax.IdleMode.kBrake);
+                motor1.setIdleMode(CANSparkMax.IdleMode.kBrake);
                 break;
             case INTAKE:
-                motor1.set(-0.6); motor2.set(-0.6);
+                motor1.set(0.6); motor2.set(0.6);
                 break;
             case OUTTAKE:
-                motor1.set(0.1); motor2.set(0.1);
+                motor1.set(-0.1); motor2.set(-0.1);
+                break;
+            case DEFAULT:
                 break;
         }
     }
@@ -38,6 +41,7 @@ public class IntermediateSubsystem implements AsyncPeriodicRunnable {
     public enum IntermediateRollerState{
         STOP,
         INTAKE,
-        OUTTAKE
+        OUTTAKE,
+        DEFAULT
     }
 }

@@ -21,6 +21,12 @@ public class RobotDelegate extends AbstractRobotDelegate {
 
     private PicoColorSensor m_colorSensor = appCTX.getPicoColorSensor();
 
+    IntermediateRollerState currentState;
+
+    String c1;
+
+    String c2;
+
     private IntermediateSubsystem intermediateSubsystem = appCTX.getIntermediateSubsystem();
     boolean timerFinished = true;
 
@@ -30,43 +36,22 @@ public class RobotDelegate extends AbstractRobotDelegate {
 
     @Override
     public void robotInit() {
-        intermediateSubsystem.setCurrentIntermediateRollerState(IntermediateSubsystem.IntermediateRollerState.STOP);
+          motor3.set(0.4);
     }
 
     @Override
     public void robotPeriodic() {
-        IntermediateRollerState currentState = IntermediateRollerState.STOP;
-        if(m_colorSensor.getRawColor0().blue < 310){
-            if (currentState != IntermediateRollerState.OUTTAKE && timerFinished) {
-                timerFinished = false;
-                t.start();
-                currentState = IntermediateRollerState.OUTTAKE;
-            }
-            // intermediateSubsystem.setCurrentIntermediateRollerState(IntermediateSubsystem.IntermediateRollerState.OUTTAKE);
-            System.out.println("o");
-        } else if(m_colorSensor.getRawColor0().blue >= 310 && m_colorSensor.getRawColor0().blue < 700){
-            if (currentState != IntermediateRollerState.INTAKE && timerFinished) {
-                timerFinished = false;
-                t.start();
-                currentState = IntermediateRollerState.INTAKE;
-            }
-            System.out.println("i");
+        if(m_colorSensor.getRawColor0().red > m_colorSensor.getRawColor0().blue && m_colorSensor.getRawColor0().red > 350){
+            currentState = IntermediateRollerState.INTAKE;
+            System.out.println("Intake");
+        }else if(m_colorSensor.getRawColor0().red < m_colorSensor.getRawColor0().blue && m_colorSensor.getRawColor0().blue > 350){
+            currentState = IntermediateRollerState.OUTTAKE;
+            System.out.println("outtake");
         }else {
-            if(timerFinished){
-                currentState = IntermediateRollerState.STOP;
-            }
+            currentState = IntermediateRollerState.STOP;
+            System.out.println("stop");
         }
-
-        if (t.getElapsedTime() >= 1000) {
-            t.stop();
-            timerFinished = true;
-        }
-
-        if (t.getElapsedTime() <= 1000 && !timerFinished) {
-            intermediateSubsystem.setCurrentIntermediateRollerState(currentState);
-        }
-
-        System.out.println(m_colorSensor.getRawColor0().blue);
+        intermediateSubsystem.setCurrentIntermediateRollerState(currentState);
     }
 
     @Override
